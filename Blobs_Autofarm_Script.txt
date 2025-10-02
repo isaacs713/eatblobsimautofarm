@@ -84,7 +84,7 @@ button.MouseButton1Click:Connect(function()
                     local orb = orbs[i]
                     if orb:IsA("BasePart") then
                         character:PivotTo(orb:GetPivot())
-                        task.wait(0.5)
+                        task.wait(0.1)
                     end
                     i = i + 1
                 end
