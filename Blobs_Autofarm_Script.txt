@@ -1,0 +1,192 @@
+local Players = game:GetService("Players")
+local Workspace = game:GetService("Workspace")
+local StarterGui = game:GetService("StarterGui")
+local TweenService = game:GetService("TweenService")
+local LocalPlayer = Players.LocalPlayer
+local mainGui = Instance.new("ScreenGui")
+mainGui.Name = "main"
+mainGui.ResetOnSpawn = false
+mainGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0, 250, 0, 180) 
+mainFrame.Position = UDim2.new(0.5, -125, 1, -90) 
+mainFrame.BackgroundColor3 = Color3.new(0, 0, 0)
+mainFrame.BorderSizePixel = 0
+mainFrame.Visible = false
+mainFrame.Parent = mainGui
+local frameCorner = Instance.new("UICorner")
+frameCorner.CornerRadius = UDim.new(0, 12)
+frameCorner.Parent = mainFrame
+local titleLabel = Instance.new("TextLabel")
+titleLabel.Size = UDim2.new(1, 0, 0, 36)
+titleLabel.Position = UDim2.new(0, 0, 0, 0)
+titleLabel.BackgroundTransparency = 1
+titleLabel.Text = "Teleport UI"
+titleLabel.TextScaled = true
+titleLabel.Font = Enum.Font.FredokaOne
+titleLabel.TextColor3 = Color3.new(1, 1, 1)
+titleLabel.Parent = mainFrame
+mainFrame.Active = true
+mainFrame.Draggable = true
+local button = Instance.new("TextButton")
+button.Size = UDim2.new(0, 200, 0, 50)
+button.Position = UDim2.new(0.5, -100, 0.5, -25)
+button.Text = "Teleport To Orbs"
+button.TextScaled = true
+button.Font = Enum.Font.FredokaOne
+button.BackgroundColor3 = Color3.fromRGB(120, 120, 120)
+button.TextColor3 = Color3.new(1, 1, 1)
+button.Parent = mainFrame
+local buttoncorner = Instance.new("UICorner")
+buttoncorner.CornerRadius = UDim.new(0, 10)
+buttoncorner.Parent = button
+local closeBtn = Instance.new("TextButton")
+closeBtn.Size = UDim2.new(0, 28, 0, 28)
+closeBtn.Position = UDim2.new(1, -32, 0, 4)
+closeBtn.Text = "X"
+closeBtn.TextScaled = true
+closeBtn.Font = Enum.Font.FredokaOne
+closeBtn.BackgroundColor3 = Color3.fromRGB(255, 0, 0) 
+closeBtn.TextColor3 = Color3.new(1,1,1) 
+closeBtn.Parent = mainFrame
+local closeCorner = Instance.new("UICorner")
+closeCorner.CornerRadius = UDim.new(0, 8)
+closeCorner.Parent = closeBtn
+StarterGui:SetCore("SendNotification", {
+    Title = "Thanks for using",
+    Text = "made by feetsmeller10 on scriptblox",
+    Icon = ""
+})
+
+local normalSize = UDim2.new(0, 200, 0, 50)
+local bigSize = UDim2.new(0, 240, 0, 60)
+local closeNormalSize = UDim2.new(0, 28, 0, 28)
+local closeBigSize = UDim2.new(0, 36, 0, 36)
+local isTeleporting = false
+local teleportTask = nil
+button.MouseButton1Click:Connect(function()
+    button.Size = bigSize
+    task.spawn(function()
+        task.wait(0.1)
+        button.Size = normalSize
+    end)
+    if not isTeleporting then
+        isTeleporting = true
+        button.Text = "Stop Teleporting"
+        teleportTask = task.spawn(function()
+            local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+            local orbsFolder = Workspace:FindFirstChild("Orbs")
+            if character and orbsFolder then
+                local orbs = orbsFolder:GetChildren()
+                local orbCount = #orbs
+                local i = 1
+                while isTeleporting and i <= orbCount do
+                    local orb = orbs[i]
+                    if orb:IsA("BasePart") then
+                        character:PivotTo(orb:GetPivot())
+                        task.wait(0.1)
+                    end
+                    i = i + 1
+                end
+            end
+            isTeleporting = false
+            button.Text = "Teleport To Orbs"
+        end)
+    else
+        isTeleporting = false
+        button.Text = "Teleport To Orbs"
+    end
+end)
+local confirmFrame = Instance.new("Frame")
+confirmFrame.Size = UDim2.new(0, 180, 0, 100)
+local viewportSize = mainGui.AbsoluteSize
+confirmFrame.Position = UDim2.new(0.5, 0, 1, -50) 
+confirmFrame.BackgroundColor3 = Color3.fromRGB(30,30,30)
+confirmFrame.Visible = false
+confirmFrame.Parent = mainGui
+confirmFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+local confirmCorner = Instance.new("UICorner")
+confirmCorner.CornerRadius = UDim.new(0, 10)
+confirmCorner.Parent = confirmFrame
+local confirmLabel = Instance.new("TextLabel")
+confirmLabel.Size = UDim2.new(1, 0, 0, 40)
+confirmLabel.Position = UDim2.new(0, 0, 0, 10)
+confirmLabel.BackgroundTransparency = 1
+confirmLabel.Text = "Close This UI?"
+confirmLabel.TextScaled = true
+confirmLabel.Font = Enum.Font.FredokaOne
+confirmLabel.TextColor3 = Color3.new(1,1,1)
+confirmLabel.Parent = confirmFrame
+local yesBtn = Instance.new("TextButton")
+yesBtn.Size = UDim2.new(0.4, -10, 0, 32)
+yesBtn.Position = UDim2.new(0.05, 0, 1, -42)
+yesBtn.Text = "Yes"
+yesBtn.TextScaled = true
+yesBtn.Font = Enum.Font.FredokaOne
+yesBtn.BackgroundColor3 = Color3.fromRGB(0, 102, 255)
+yesBtn.TextColor3 = Color3.new(1,1,1)
+yesBtn.Parent = confirmFrame
+local yesCorner = Instance.new("UICorner")
+yesCorner.CornerRadius = UDim.new(0, 8)
+yesCorner.Parent = yesBtn
+local noBtn = Instance.new("TextButton")
+noBtn.Size = UDim2.new(0.4, -10, 0, 32)
+noBtn.Position = UDim2.new(0.55, 10, 1, -42)
+noBtn.Text = "No"
+noBtn.TextScaled = true
+noBtn.Font = Enum.Font.FredokaOne
+noBtn.BackgroundColor3 = Color3.fromRGB(80,80,80)
+noBtn.TextColor3 = Color3.new(1,1,1)
+noBtn.Parent = confirmFrame
+local noCorner = Instance.new("UICorner")
+noCorner.CornerRadius = UDim.new(0, 8)
+noCorner.Parent = noBtn
+local function showConfirmFrame()
+    confirmFrame.Visible = true
+    confirmFrame.Position = UDim2.new(0.5, 0, 1, -50)
+    confirmFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+    local viewportSize = mainGui.AbsoluteSize
+    local centerX = viewportSize.X/2
+    local centerY = viewportSize.Y/2
+    local tweenInfo = TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+    local tween = TweenService:Create(confirmFrame, tweenInfo, {Position = UDim2.new(0.5, 0, 0.5, 0)})
+    tween:Play()
+end
+
+closeBtn.MouseButton1Click:Connect(function()
+    local tweenInfo = TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+    local growTween = TweenService:Create(closeBtn, tweenInfo, {Size = closeBigSize})
+    growTween:Play()
+    growTween.Completed:Connect(function()
+        local shrinkTween = TweenService:Create(closeBtn, tweenInfo, {Size = closeNormalSize})
+        shrinkTween:Play()
+    end)
+    mainFrame.Visible = false
+    showConfirmFrame()
+end)
+yesBtn.MouseButton1Click:Connect(function()
+    confirmFrame.Visible = false
+    mainFrame.Visible = false
+    if mainGui then
+        mainGui:Destroy()
+    end
+end)
+
+noBtn.MouseButton1Click:Connect(function()
+    local tweenInfo = TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
+    local tween = TweenService:Create(confirmFrame, tweenInfo, {Position = UDim2.new(0.5, 0, 1, -50)})
+    tween:Play()
+    tween.Completed:Connect(function()
+        confirmFrame.Visible = false
+        mainFrame.Visible = true
+        confirmFrame.Position = UDim2.new(0.5, 0, 1, -50)
+    end)
+end)
+task.spawn(function()
+    mainFrame.Visible = true
+    mainFrame.Position = UDim2.new(0.5, -125, 1, -90) 
+    local tweenInfo = TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+    local tween = TweenService:Create(mainFrame, tweenInfo, {Position = UDim2.new(0.5, -125, 0.5, -90)})
+    tween:Play()
+end)
+
