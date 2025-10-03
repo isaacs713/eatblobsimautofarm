@@ -67,7 +67,7 @@ local teleportTask = nil
 button.MouseButton1Click:Connect(function()
     button.Size = bigSize
     task.spawn(function()
-        task.wait(0.1)
+        task.wait(0.6)
         button.Size = normalSize
     end)
     if not isTeleporting then
